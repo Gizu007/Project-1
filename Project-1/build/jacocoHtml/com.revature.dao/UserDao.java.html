@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserDao.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Project-1</a> &gt; <a href="index.source.html" class="el_package">com.revature.dao</a> &gt; <span class="el_source">UserDao.java</span></div><h1>UserDao.java</h1><pre class="source lang-java linenums">package com.revature.dao;
+import com.revature.dto.LoginDTO;
+import com.revature.dto.UserDTO;
+import com.revature.model.User;
+import com.revature.model.UserRole;
+import com.revature.utility.ConnectionUtility;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class UserDao {
+
+<span class="nc" id="L16">    public UserDao() {</span>
+<span class="nc" id="L17">    }</span>
+
+    public User getUserByUsernameAndPassword(LoginDTO dto) throws SQLException {
+<span class="nc" id="L20">        try (Connection con = ConnectionUtility.getConnection()) {</span>
+<span class="nc" id="L21">            String sql = &quot;SELECT u.User_Id, u.ERS_Username, u.User_First_Name, u.User_Last_Name, u.User_Email, ur.User_Role_Id, ur.role &quot; +</span>
+            &quot;FROM ERS_User u &quot; +
+            &quot;INNER JOIN ERS_User_Roles ur &quot; +
+            &quot;ON ur.User_Role_Id = u.User_Role_Id &quot; +
+            &quot;WHERE u.ERS_Username = ? and u.ERS_Password = crypt(? , u.ERS_Password)&quot;;
+
+<span class="nc" id="L27">            PreparedStatement pstmt = con.prepareStatement(sql);</span>
+
+<span class="nc" id="L29">            pstmt.setString(1, dto.getUsername());</span>
+<span class="nc" id="L30">            pstmt.setString(2, dto.getPassword());</span>
+
+<span class="nc" id="L32">            ResultSet rs = pstmt.executeQuery();</span>
+
+<span class="nc bnc" id="L34" title="All 2 branches missed.">            if (rs.next()) {</span>
+<span class="nc" id="L35">                int userId = rs.getInt(&quot;User_Id&quot;);</span>
+<span class="nc" id="L36">                String username = rs.getString(&quot;ERS_Username&quot;);</span>
+<span class="nc" id="L37">                String firstName = rs.getString(&quot;User_First_Name&quot;);</span>
+<span class="nc" id="L38">                String lastName = rs.getString(&quot;User_Last_Name&quot;);</span>
+<span class="nc" id="L39">                String email = rs.getString(&quot;User_Email&quot;);</span>
+<span class="nc" id="L40">                int userRoleId = rs.getInt(&quot;User_Role_Id&quot;);</span>
+<span class="nc" id="L41">                String role = rs.getString(&quot;role&quot;);</span>
+
+<span class="nc" id="L43">                UserRole userRole = new UserRole(userRoleId, role);</span>
+<span class="nc" id="L44">                return new User(userId, username, firstName, lastName, email, userRole);</span>
+            }
+
+<span class="nc" id="L47">            return null;</span>
+        }
+    }
+    public UserDTO getUserByUserId(int id) throws SQLException {
+
+<span class="nc" id="L52">        try(Connection con = ConnectionUtility.getConnection()) {</span>
+<span class="nc" id="L53">            String sql = &quot;SELECT * &quot; +</span>
+                    &quot;FROM employees e &quot; +
+                    &quot;WHERE User_Id = ?&quot;;
+
+<span class="nc" id="L57">            PreparedStatement pstmt = con.prepareStatement(sql);</span>
+
+<span class="nc" id="L59">            pstmt.setInt(1, id);</span>
+
+<span class="nc" id="L61">            ResultSet rs = pstmt.executeQuery();</span>
+
+<span class="nc bnc" id="L63" title="All 2 branches missed.">            if (rs.next()) {</span>
+<span class="nc" id="L64">                String firstName = rs.getString(&quot;User_First_Name&quot;);</span>
+<span class="nc" id="L65">                String lastName = rs.getString(&quot;User_Last_Name&quot;);</span>
+<span class="nc" id="L66">                String email = rs.getString(&quot;User_Email&quot;);</span>
+<span class="nc" id="L67">                int userRoleId = rs.getInt(&quot;User_Role_Id&quot;);</span>
+<span class="nc" id="L68">                String role = rs.getString(&quot;role&quot;);</span>
+
+<span class="nc" id="L70">                UserRole userRole = new UserRole(userRoleId, role);</span>
+<span class="nc" id="L71">                return new UserDTO(id, firstName, lastName, email, userRole);</span>
+            }
+
+
+<span class="nc" id="L75">            return null;</span>
+
+        }
+
+
+
+    }
+
+    public List&lt;UserDTO&gt; getAllUsers() throws SQLException {
+<span class="nc" id="L84">        try(Connection con = ConnectionUtility.getConnection()) {</span>
+<span class="nc" id="L85">            String sql = &quot;SELECT * &quot; +</span>
+                    &quot;FROM employees&quot;;
+
+<span class="nc" id="L88">            PreparedStatement pstmt = con.prepareStatement(sql);</span>
+
+<span class="nc" id="L90">            ResultSet rs = pstmt.executeQuery();</span>
+
+<span class="nc" id="L92">            List&lt;UserDTO&gt; users = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">            while (rs.next()) {</span>
+<span class="nc" id="L94">                int id = rs.getInt(&quot;User_Id&quot;);</span>
+<span class="nc" id="L95">                String firstName = rs.getString(&quot;User_First_Name&quot;);</span>
+<span class="nc" id="L96">                String lastName = rs.getString(&quot;User_Last_Name&quot;);</span>
+<span class="nc" id="L97">                String email = rs.getString(&quot;User_Email&quot;);</span>
+<span class="nc" id="L98">                int userRoleId = rs.getInt(&quot;User_Role_Id&quot;);</span>
+<span class="nc" id="L99">                String role = rs.getString(&quot;role&quot;);</span>
+
+<span class="nc" id="L101">                UserRole userRole = new UserRole(userRoleId, role);</span>
+<span class="nc" id="L102">                UserDTO user = new UserDTO(id, firstName, lastName, email, userRole);</span>
+
+<span class="nc" id="L104">                users.add(user);</span>
+<span class="nc" id="L105">            }</span>
+<span class="nc" id="L106">            return users;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

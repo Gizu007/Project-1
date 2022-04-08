@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AddReimbursementDTO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Project-1</a> &gt; <a href="index.source.html" class="el_package">com.revature.dto</a> &gt; <span class="el_source">AddReimbursementDTO.java</span></div><h1>AddReimbursementDTO.java</h1><pre class="source lang-java linenums">package com.revature.dto;
+import io.javalin.http.UploadedFile;
+
+import java.sql.Timestamp;
+import java.util.Objects;
+
+public class AddReimbursementDTO {
+
+    private double reimbAmount;
+    private Timestamp reimbSubmitted;
+    private String reimbDescription;
+    private UploadedFile reimbReceiptImage;
+    private int reimbAuthor;
+    private int reimbType;
+
+<span class="fc" id="L16">    public AddReimbursementDTO(){</span>
+
+<span class="fc" id="L18">    }</span>
+
+    public AddReimbursementDTO(double reimbAmount, Timestamp reimbSubmitted, String reimbDescription,
+<span class="fc" id="L21">                               UploadedFile reimbReceiptImage, int reimbAuthor, int reimbType) {</span>
+<span class="fc" id="L22">        this.reimbAmount = reimbAmount;</span>
+<span class="fc" id="L23">        this.reimbSubmitted = reimbSubmitted;</span>
+<span class="fc" id="L24">        this.reimbDescription = reimbDescription;</span>
+<span class="fc" id="L25">        this.reimbReceiptImage = reimbReceiptImage;</span>
+<span class="fc" id="L26">        this.reimbAuthor = reimbAuthor;</span>
+<span class="fc" id="L27">        this.reimbType = reimbType;</span>
+<span class="fc" id="L28">    }</span>
+
+    public double getReimbAmount() {
+<span class="fc" id="L31">        return reimbAmount;</span>
+    }
+
+    public void setReimbAmount(double reimbAmount) {
+<span class="fc" id="L35">        this.reimbAmount = reimbAmount;</span>
+<span class="fc" id="L36">    }</span>
+
+    public Timestamp getReimbSubmitted() {
+<span class="nc" id="L39">        return reimbSubmitted;</span>
+    }
+
+    public void setReimbSubmitted(Timestamp reimbSubmitted) {
+<span class="fc" id="L43">        this.reimbSubmitted = reimbSubmitted;</span>
+<span class="fc" id="L44">    }</span>
+
+    public String getReimbDescription() {
+<span class="fc" id="L47">        return reimbDescription;</span>
+    }
+
+    public void setReimbDescription(String reimbDescription) {
+<span class="fc" id="L51">        this.reimbDescription = reimbDescription;</span>
+<span class="fc" id="L52">    }</span>
+
+    public UploadedFile getReimbReceiptImage() {
+<span class="fc" id="L55">        return reimbReceiptImage;</span>
+    }
+
+    public void setReimbReceiptImage(UploadedFile reimbReceiptImage) {
+<span class="nc" id="L59">        this.reimbReceiptImage = reimbReceiptImage;</span>
+<span class="nc" id="L60">    }</span>
+
+    public int getReimbAuthor() {
+<span class="fc" id="L63">        return reimbAuthor;</span>
+    }
+
+    public void setReimbAuthor(int reimbAuthor) {
+<span class="nc" id="L67">        this.reimbAuthor = reimbAuthor;</span>
+<span class="nc" id="L68">    }</span>
+
+    public int getReimbType() {
+<span class="fc" id="L71">        return reimbType;</span>
+    }
+
+    public void setReimbType(int reimbType) {
+<span class="fc" id="L75">        this.reimbType = reimbType;</span>
+<span class="fc" id="L76">    }</span>
+
+    @Override
+    public boolean equals(Object o) {
+<span class="nc bnc" id="L80" title="All 2 branches missed.">        if (this == o) return true;</span>
+<span class="nc bnc" id="L81" title="All 4 branches missed.">        if (o == null || getClass() != o.getClass()) return false;</span>
+<span class="nc" id="L82">        AddReimbursementDTO that = (AddReimbursementDTO) o;</span>
+<span class="nc bnc" id="L83" title="All 12 branches missed.">        return Double.compare(that.reimbAmount, reimbAmount) == 0 &amp;&amp; reimbAuthor == that.reimbAuthor &amp;&amp; reimbType == that.reimbType &amp;&amp; Objects.equals(reimbSubmitted, that.reimbSubmitted) &amp;&amp; Objects.equals(reimbDescription, that.reimbDescription) &amp;&amp; Objects.equals(reimbReceiptImage, that.reimbReceiptImage);</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L88">        return Objects.hash(reimbAmount, reimbSubmitted, reimbDescription, reimbReceiptImage, reimbAuthor, reimbType);</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L93">        return &quot;AddReimbursementDTO{&quot; +</span>
+                &quot;reimbAmount=&quot; + reimbAmount +
+                &quot;, reimbSubmitted='&quot; + reimbSubmitted + '\'' +
+                &quot;, reimbDescription='&quot; + reimbDescription + '\'' +
+                &quot;, reimbReceiptImage=&quot; + reimbReceiptImage +
+                &quot;, reimbAuthor=&quot; + reimbAuthor +
+                &quot;, reimbType=&quot; + reimbType +
+                '}';
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

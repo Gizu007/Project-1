@@ -1,0 +1,24 @@
+.receipt-image {
+    width: 70%;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+tr:hover {
+    background-color: #D1D1D1;
+}
+
+.reimb-table {
+    padding-right: 7%;
+    padding-left: 7%;
+}
+
+.navbar {
+    padding-bottom: 7%;
+    margin-bottom: 7%;
+}
+
+h1 {
+    padding-bottom: 5%;
+}

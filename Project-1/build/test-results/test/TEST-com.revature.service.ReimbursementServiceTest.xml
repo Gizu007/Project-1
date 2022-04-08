@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.revature.service.ReimbursementServiceTest" tests="30" skipped="0" failures="0" errors="0" timestamp="2022-04-04T14:00:06" hostname="DESKTOP-H8JS8EI" time="0.165">
+  <properties/>
+  <testcase name="attemptToEditResolvedReimbursement()" classname="com.revature.service.ReimbursementServiceTest" time="0.071"/>
+  <testcase name="updateReimbursementStatusWithInvalidStatusCode()" classname="com.revature.service.ReimbursementServiceTest" time="0.003"/>
+  <testcase name="testAddValidReimbursement()" classname="com.revature.service.ReimbursementServiceTest" time="0.018"/>
+  <testcase name="failToUpdateResolvedReimbursementStatus()" classname="com.revature.service.ReimbursementServiceTest" time="0.003"/>
+  <testcase name="editUnresolvedReimbursementInvalidType()" classname="com.revature.service.ReimbursementServiceTest" time="0.003"/>
+  <testcase name="testAddReimbursementInvalidType()" classname="com.revature.service.ReimbursementServiceTest" time="0.001"/>
+  <testcase name="getReimbursementByInvalidId()" classname="com.revature.service.ReimbursementServiceTest" time="0.002"/>
+  <testcase name="deleteResolvedReimbursement()" classname="com.revature.service.ReimbursementServiceTest" time="0.002"/>
+  <testcase name="testAddReimbursementInvalidImage()" classname="com.revature.service.ReimbursementServiceTest" time="0.002"/>
+  <testcase name="getAllReimbursementsByInvalidStatus()" classname="com.revature.service.ReimbursementServiceTest" time="0.002"/>
+  <testcase name="getReimbursementByValidId()" classname="com.revature.service.ReimbursementServiceTest" time="0.003"/>
+  <testcase name="testAddReimbursementImageSizeTooLarge()" classname="com.revature.service.ReimbursementServiceTest" time="0.003"/>
+  <testcase name="getAllReimbursements()" classname="com.revature.service.ReimbursementServiceTest" time="0.002"/>
+  <testcase name="testAddReimbursementNegativeAmount()" classname="com.revature.service.ReimbursementServiceTest" time="0.001"/>
+  <testcase name="getReimbursementsByValidUserAndValidStatus()" classname="com.revature.service.ReimbursementServiceTest" time="0.003"/>
+  <testcase name="attemptToDeleteNonExistentReimbursement()" classname="com.revature.service.ReimbursementServiceTest" time="0.003"/>
+  <testcase name="getReimbursementThatDoesNotExist()" classname="com.revature.service.ReimbursementServiceTest" time="0.002"/>
+  <testcase name="getAllReumbursementsForAUser()" classname="com.revature.service.ReimbursementServiceTest" time="0.002"/>
+  <testcase name="editUnresolvedReimbursementInvalidReimbursementId()" classname="com.revature.service.ReimbursementServiceTest" time="0.001"/>
+  <testcase name="getReimbursementsByValidUserAndValidStatusWithOddCasing()" classname="com.revature.service.ReimbursementServiceTest" time="0.002"/>
+  <testcase name="getAllReimbursementsByValidStatus()" classname="com.revature.service.ReimbursementServiceTest" time="0.002"/>
+  <testcase name="failToUpdateNonexistentReimbursementStatus()" classname="com.revature.service.ReimbursementServiceTest" time="0.001"/>
+  <testcase name="deleteUnresolvedReimbursement()" classname="com.revature.service.ReimbursementServiceTest" time="0.005"/>
+  <testcase name="getReimbursementsByValidUserAndInvalidStatus()" classname="com.revature.service.ReimbursementServiceTest" time="0.001"/>
+  <testcase name="getReimbursementsByInvalidUserAndValidStatus()" classname="com.revature.service.ReimbursementServiceTest" time="0.001"/>
+  <testcase name="testAddValidReimbursementTrimDescription()" classname="com.revature.service.ReimbursementServiceTest" time="0.003"/>
+  <testcase name="updateUnresolvedReimbursementStatus()" classname="com.revature.service.ReimbursementServiceTest" time="0.003"/>
+  <testcase name="getAllReimbursementsForAnInvalidUser()" classname="com.revature.service.ReimbursementServiceTest" time="0.001"/>
+  <testcase name="editUnresolvedReimbursementUserNegativeAmount()" classname="com.revature.service.ReimbursementServiceTest" time="0.003"/>
+  <testcase name="editUnresolvedReimbursementUser()" classname="com.revature.service.ReimbursementServiceTest" time="0.004"/>
+  <system-out><![CDATA[04 04 2022 - 10:00:06.176 [Test worker] INFO  c.r.service.ReimbursementService - User requested reimbursement of id 1.
+04 04 2022 - 10:00:06.192 [Test worker] INFO  c.r.service.ReimbursementService - User requested reimbursement of id 1.
+04 04 2022 - 10:00:06.211 [Test worker] INFO  c.r.service.ReimbursementService - User 1 added a reimbursement.
+04 04 2022 - 10:00:06.214 [Test worker] INFO  c.r.service.ReimbursementService - User requested reimbursement of id 1.
+04 04 2022 - 10:00:06.217 [Test worker] INFO  c.r.service.ReimbursementService - User requested reimbursement of id 1.
+04 04 2022 - 10:00:06.225 [Test worker] INFO  c.r.service.ReimbursementService - User requested reimbursement of id 1.
+04 04 2022 - 10:00:06.233 [Test worker] INFO  c.r.service.ReimbursementService - User requested reimbursement of id 1.
+04 04 2022 - 10:00:06.239 [Test worker] INFO  c.r.service.ReimbursementService - User requested all reimbursements.
+04 04 2022 - 10:00:06.243 [Test worker] INFO  c.r.service.ReimbursementService - User requested all Pending reimbursements for user 1.
+04 04 2022 - 10:00:06.251 [Test worker] INFO  c.r.service.ReimbursementService - User requested all reimbursements for 1.
+04 04 2022 - 10:00:06.254 [Test worker] INFO  c.r.service.ReimbursementService - User requested all Approved reimbursements for user 1.
+04 04 2022 - 10:00:06.257 [Test worker] INFO  c.r.service.ReimbursementService - User requested all Rejected reimbursements.
+04 04 2022 - 10:00:06.262 [Test worker] INFO  c.r.service.ReimbursementService - User requested reimbursement of id 1.
+04 04 2022 - 10:00:06.262 [Test worker] INFO  c.r.service.ReimbursementService - User deleted a reimbursement with an id of 1.
+04 04 2022 - 10:00:06.270 [Test worker] INFO  c.r.service.ReimbursementService - User 1 added a reimbursement.
+04 04 2022 - 10:00:06.272 [Test worker] INFO  c.r.service.ReimbursementService - User requested reimbursement of id 1.
+04 04 2022 - 10:00:06.272 [Test worker] INFO  c.r.service.ReimbursementService - User updated the status of reimbursement with an id of 1 to 3.
+04 04 2022 - 10:00:06.279 [Test worker] INFO  c.r.service.ReimbursementService - User requested reimbursement of id 1.
+04 04 2022 - 10:00:06.283 [Test worker] INFO  c.r.service.ReimbursementService - User requested reimbursement of id 1.
+04 04 2022 - 10:00:06.284 [Test worker] INFO  c.r.service.ReimbursementService - User edited reimbursement with an id of 1.
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

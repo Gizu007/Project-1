@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.revature.service.UserServiceTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2022-04-04T14:00:06" hostname="DESKTOP-H8JS8EI" time="0.015">
+  <properties/>
+  <testcase name="testGetNonExistentUserInfo()" classname="com.revature.service.UserServiceTest" time="0.003"/>
+  <testcase name="testGetAllUsers()" classname="com.revature.service.UserServiceTest" time="0.002"/>
+  <testcase name="testSuccessfulLoginAttempt()" classname="com.revature.service.UserServiceTest" time="0.001"/>
+  <testcase name="testFailedLoginAttempt()" classname="com.revature.service.UserServiceTest" time="0.002"/>
+  <testcase name="testGetUserInfoInvalidUserId()" classname="com.revature.service.UserServiceTest" time="0.001"/>
+  <testcase name="testGetValidUserInfo()" classname="com.revature.service.UserServiceTest" time="0.003"/>
+  <system-out><![CDATA[04 04 2022 - 10:00:06.361 [Test worker] INFO  com.revature.service.UserService - Successful login.
+Username: admin
+04 04 2022 - 10:00:06.364 [Test worker] WARN  com.revature.service.UserService - Failed login attempt.
+Username: admin
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReimbursementController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Project-1</a> &gt; <a href="index.source.html" class="el_package">com.revature.controller</a> &gt; <span class="el_source">ReimbursementController.java</span></div><h1>ReimbursementController.java</h1><pre class="source lang-java linenums">package com.revature.controller;
+
+import com.revature.dto.ResponseReimbursementDTO;
+import com.revature.dto.UpdateReimbursementDTO;
+import com.revature.dto.AddReimbursementDTO;
+import com.revature.dto.UpdateReimbursementStatusDTO;
+import com.revature.model.Reimbursement;
+
+import com.revature.service.JWTService;
+import com.revature.service.ReimbursementService;
+import com.revature.service.UserService;
+
+import io.javalin.Javalin;
+import io.javalin.http.Handler;
+import io.javalin.http.UnauthorizedResponse;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+
+import java.util.List;
+
+public class ReimbursementController implements Controller{
+
+    private JWTService jwtService;
+    private ReimbursementService reimbursementService;
+    private UserService userService;
+
+<span class="nc" id="L27">    public ReimbursementController() {</span>
+<span class="nc" id="L28">        this.jwtService = new JWTService();</span>
+<span class="nc" id="L29">        this.reimbursementService = new ReimbursementService();</span>
+<span class="nc" id="L30">        this.userService = new UserService();</span>
+<span class="nc" id="L31">    }</span>
+
+
+<span class="nc" id="L34">    private Handler addReimbursement = (ctx) -&gt; {</span>
+<span class="nc bnc" id="L35" title="All 2 branches missed.">        if (ctx.header(&quot;Authorization&quot;) == null) {</span>
+<span class="nc" id="L36">            throw new UnauthorizedResponse(&quot;You must be logged in to access this endpoint.&quot;);</span>
+        }
+<span class="nc" id="L38">        String jwt = ctx.header(&quot;Authorization&quot;).split(&quot; &quot;)[1];</span>
+
+<span class="nc" id="L40">        Jws&lt;Claims&gt; token = this.jwtService.parseJwt(jwt);</span>
+
+
+<span class="nc" id="L43">        String userId = ctx.pathParam(&quot;user_id&quot;);</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">        if(!(&quot;&quot;+token.getBody().get(&quot;user_id&quot;)).equals(userId)) {</span>
+<span class="nc" id="L45">            throw new UnauthorizedResponse(&quot;You cannot add a reimbursement request for anyone but yourself.&quot;);</span>
+        }
+
+<span class="nc" id="L48">        AddReimbursementDTO dto = new AddReimbursementDTO();</span>
+<span class="nc" id="L49">        dto.setReimbAmount(Double.parseDouble(ctx.formParam(&quot;amount&quot;)));</span>
+<span class="nc" id="L50">        dto.setReimbAuthor((Integer)token.getBody().get(&quot;user_id&quot;));</span>
+<span class="nc" id="L51">        dto.setReimbDescription(ctx.formParam(&quot;description&quot;));</span>
+<span class="nc" id="L52">        dto.setReimbType(Integer.parseInt(ctx.formParam(&quot;type&quot;)));</span>
+<span class="nc" id="L53">        dto.setReimbReceiptImage(ctx.uploadedFiles().get(0));</span>
+<span class="nc" id="L54">        ResponseReimbursementDTO newReimbursement = reimbursementService.addReimbursement(dto);</span>
+<span class="nc" id="L55">        ctx.status(201);</span>
+<span class="nc" id="L56">        ctx.json(newReimbursement);</span>
+
+<span class="nc" id="L58">    };</span>
+
+<span class="nc" id="L60">    private Handler getAllReimbursements = (ctx) -&gt; {</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">        if (ctx.header(&quot;Authorization&quot;) == null) {</span>
+<span class="nc" id="L62">            throw new UnauthorizedResponse(&quot;You must be logged in to access this endpoint.&quot;);</span>
+        }
+<span class="nc" id="L64">        String jwt = ctx.header(&quot;Authorization&quot;).split(&quot; &quot;)[1];</span>
+
+<span class="nc" id="L66">        Jws&lt;Claims&gt; token = this.jwtService.parseJwt(jwt);</span>
+
+<span class="nc bnc" id="L68" title="All 2 branches missed.">        if (((Integer) token.getBody().get(&quot;user_role_id&quot;)) == 2) {</span>
+<span class="nc" id="L69">            throw new UnauthorizedResponse(&quot;You must be a Finance-Manager to access this endpoint.&quot;);</span>
+        }
+
+<span class="nc" id="L72">        String status = ctx.queryParam(&quot;status&quot;);</span>
+
+        List&lt;ResponseReimbursementDTO&gt; reimbursements;
+
+<span class="nc bnc" id="L76" title="All 2 branches missed.">        if (status != null) {</span>
+<span class="nc" id="L77">            reimbursements = reimbursementService.getAllReimbursementsByStatus(status);</span>
+        } else {
+<span class="nc" id="L79">            reimbursements = reimbursementService.getAllReimbursements();</span>
+        }
+<span class="nc" id="L81">        ctx.status(200);</span>
+<span class="nc" id="L82">        ctx.json(reimbursements);</span>
+<span class="nc" id="L83">    };</span>
+
+
+<span class="nc" id="L86">    private Handler getReimbursementById = (ctx) -&gt; {</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        if (ctx.header(&quot;Authorization&quot;) == null) {</span>
+<span class="nc" id="L88">            throw new UnauthorizedResponse(&quot;You must be logged in to access this endpoint.&quot;);</span>
+        }
+<span class="nc" id="L90">        String jwt = ctx.header(&quot;Authorization&quot;).split(&quot; &quot;)[1];</span>
+
+<span class="nc" id="L92">        Jws&lt;Claims&gt; token = this.jwtService.parseJwt(jwt);</span>
+
+<span class="nc" id="L94">        String userId = ctx.pathParam(&quot;user_id&quot;);</span>
+
+<span class="nc bnc" id="L96" title="All 2 branches missed.">        if((Integer) (token.getBody().get(&quot;user_role_id&quot;)) == 2) {</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">            if (!(&quot;&quot;+token.getBody().get(&quot;user_id&quot;)).equals(userId)){</span>
+<span class="nc" id="L98">                throw new UnauthorizedResponse(&quot;You cannot access a reimbursement that does not belong to you.&quot;);</span>
+            }
+        }
+<span class="nc" id="L101">        String reimbId = ctx.pathParam(&quot;reimb_id&quot;);</span>
+<span class="nc" id="L102">        Reimbursement reimbursement = reimbursementService.getReimbursementById(reimbId);</span>
+<span class="nc" id="L103">        ctx.status(200);</span>
+<span class="nc" id="L104">        ctx.json(reimbursement);</span>
+
+<span class="nc" id="L106">    };</span>
+
+<span class="nc" id="L108">    private Handler getAllReimbursementsForUser = (ctx) -&gt; {</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">        if (ctx.header(&quot;Authorization&quot;) == null) {</span>
+<span class="nc" id="L110">            throw new UnauthorizedResponse(&quot;You must be logged in to access this endpoint.&quot;);</span>
+        }
+<span class="nc" id="L112">        String jwt = ctx.header(&quot;Authorization&quot;).split(&quot; &quot;)[1];</span>
+
+<span class="nc" id="L114">        Jws&lt;Claims&gt; token = this.jwtService.parseJwt(jwt);</span>
+
+<span class="nc" id="L116">        String userId = ctx.pathParam(&quot;user_id&quot;);</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">        if((Integer) (token.getBody().get(&quot;user_role_id&quot;)) == 2) {</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">            if (!(&quot;&quot; + token.getBody().get(&quot;user_id&quot;)).equals(userId)) {</span>
+<span class="nc" id="L119">                throw new UnauthorizedResponse(&quot;You cannot access reimbursements that do not belong to you.&quot;);</span>
+            }
+        }
+<span class="nc" id="L122">        String status = ctx.queryParam(&quot;status&quot;);</span>
+        List&lt;ResponseReimbursementDTO&gt; reimbursements;
+<span class="nc bnc" id="L124" title="All 2 branches missed.">        if (status != null) {</span>
+<span class="nc" id="L125">            reimbursements = reimbursementService.getReimbursementsByUserAndStatus(userId, status);</span>
+        } else {
+<span class="nc" id="L127">            reimbursements = reimbursementService.getReimbursementsByUser(userId);</span>
+        }
+<span class="nc" id="L129">        ctx.status(200);</span>
+<span class="nc" id="L130">        ctx.json(reimbursements);</span>
+<span class="nc" id="L131">    };</span>
+
+<span class="nc" id="L133">    private Handler editUnresolvedReimbursement = (ctx) -&gt; {</span>
+<span class="nc bnc" id="L134" title="All 2 branches missed.">        if (ctx.header(&quot;Authorization&quot;) == null) {</span>
+<span class="nc" id="L135">            throw new UnauthorizedResponse(&quot;You must be logged in to access this endpoint.&quot;);</span>
+        }
+<span class="nc" id="L137">        String jwt = ctx.header(&quot;Authorization&quot;).split(&quot; &quot;)[1];</span>
+
+<span class="nc" id="L139">        Jws&lt;Claims&gt; token = this.jwtService.parseJwt(jwt);</span>
+
+<span class="nc" id="L141">        String userId = ctx.pathParam(&quot;user_id&quot;);</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">        if (!(&quot;&quot;+token.getBody().get(&quot;user_id&quot;)).equals(userId)) {</span>
+<span class="nc" id="L143">            throw new UnauthorizedResponse(&quot;You cannot edit a reimbursement that does not belong to you.&quot;);</span>
+        }
+<span class="nc" id="L145">        String reimbId = ctx.pathParam(&quot;reimb_id&quot;);</span>
+<span class="nc bnc" id="L146" title="All 2 branches missed.">        if (!(reimbursementService.getReimbursementById(reimbId).getEmail().equals(userService.getUserInfo(userId).getEmail()))) {</span>
+<span class="nc" id="L147">            throw new UnauthorizedResponse(&quot;You cannot edit a reimbursement that does not belong to you.&quot;);</span>
+        }
+
+<span class="nc" id="L150">        UpdateReimbursementDTO reimbursementDetails = ctx.bodyAsClass(UpdateReimbursementDTO.class);</span>
+
+<span class="nc" id="L152">        Reimbursement reimbursement = reimbursementService.editUnresolvedReimbursement(reimbId, reimbursementDetails);</span>
+<span class="nc" id="L153">        ctx.status(201);</span>
+<span class="nc" id="L154">        ctx.json(reimbursement);</span>
+<span class="nc" id="L155">    };</span>
+
+<span class="nc" id="L157">    private Handler updateReimbursementStatus = (ctx) -&gt; {</span>
+<span class="nc bnc" id="L158" title="All 2 branches missed.">        if (ctx.header(&quot;Authorization&quot;) == null) {</span>
+<span class="nc" id="L159">            throw new UnauthorizedResponse(&quot;You must be logged in to access this endpoint.&quot;);</span>
+        }
+<span class="nc" id="L161">        String jwt = ctx.header(&quot;Authorization&quot;).split(&quot; &quot;)[1];</span>
+
+<span class="nc" id="L163">        Jws&lt;Claims&gt; token = this.jwtService.parseJwt(jwt);</span>
+<span class="nc" id="L164">        int userRoleId = (Integer) token.getBody().get(&quot;user_role_id&quot;);</span>
+<span class="nc bnc" id="L165" title="All 2 branches missed.">        if(!(userRoleId == 1)) {</span>
+<span class="nc" id="L166">            throw new UnauthorizedResponse(&quot;You must be a finance manager to approve or deny reimbursements.&quot;);</span>
+        }
+<span class="nc" id="L168">        String reimbId = ctx.pathParam(&quot;reimb_id&quot;);</span>
+<span class="nc bnc" id="L169" title="All 2 branches missed.">        if (reimbursementService.getReimbursementById(reimbId).getEmail().equals(userService.getUserInfo(&quot;&quot;+token.getBody().get(&quot;user_id&quot;)).getEmail())) {</span>
+<span class="nc" id="L170">            throw new UnauthorizedResponse(&quot;You cannot approve or deny your own reimbursement ticket.&quot;);</span>
+        }
+<span class="nc" id="L172">        UpdateReimbursementStatusDTO dto = ctx.bodyAsClass(UpdateReimbursementStatusDTO.class);</span>
+<span class="nc" id="L173">        dto.setResolverId((Integer) token.getBody().get(&quot;user_id&quot;));</span>
+<span class="nc" id="L174">        boolean success = reimbursementService.updateReimbursementStatus(dto, reimbId);</span>
+
+<span class="nc" id="L176">        ctx.status(201);</span>
+<span class="nc" id="L177">        ctx.json(success);</span>
+<span class="nc" id="L178">    };</span>
+
+<span class="nc" id="L180">    private Handler deleteUnresolvedReimbursement = (ctx) -&gt; {</span>
+<span class="nc bnc" id="L181" title="All 2 branches missed.">        if (ctx.header(&quot;Authorization&quot;) == null) {</span>
+<span class="nc" id="L182">            throw new UnauthorizedResponse(&quot;You must be logged in to access this endpoint.&quot;);</span>
+        }
+<span class="nc" id="L184">        String jwt = ctx.header(&quot;Authorization&quot;).split(&quot; &quot;)[1];</span>
+
+<span class="nc" id="L186">        Jws&lt;Claims&gt; token = this.jwtService.parseJwt(jwt);</span>
+
+<span class="nc" id="L188">        String userId = ctx.pathParam(&quot;user_id&quot;);</span>
+<span class="nc bnc" id="L189" title="All 2 branches missed.">        if (!(&quot;&quot;+token.getBody().get(&quot;user_id&quot;)).equals(userId)) {</span>
+<span class="nc" id="L190">            throw new UnauthorizedResponse(&quot;You cannot edit a reimbursement that does not belong to you.&quot;);</span>
+        }
+<span class="nc" id="L192">        String reimbId = ctx.pathParam(&quot;reimb_id&quot;);</span>
+<span class="nc bnc" id="L193" title="All 2 branches missed.">        if (!(reimbursementService.getReimbursementById(reimbId).getEmail().equals(userService.getUserInfo(userId).getEmail()))) {</span>
+<span class="nc" id="L194">            throw new UnauthorizedResponse(&quot;You cannot edit a reimbursement that does not belong to you.&quot;);</span>
+        }
+<span class="nc" id="L196">        boolean success = reimbursementService.deleteUnresolvedReimbursement(reimbId);</span>
+<span class="nc" id="L197">        ctx.status(200);</span>
+<span class="nc" id="L198">        ctx.json(success);</span>
+<span class="nc" id="L199">    };</span>
+
+
+
+    @Override
+    public void mapEndpoints(Javalin app) {
+
+<span class="nc" id="L206">        app.post(&quot;/users/{user_id}/reimbursements&quot;, addReimbursement);</span>
+
+<span class="nc" id="L208">        app.get(&quot;/users/{user_id}/reimbursements&quot;, getAllReimbursementsForUser);</span>
+<span class="nc" id="L209">        app.get(&quot;/reimbursements&quot;, getAllReimbursements);</span>
+<span class="nc" id="L210">        app.get(&quot;/users/{user_id}/reimbursements/{reimb_id}&quot;, getReimbursementById);</span>
+
+<span class="nc" id="L212">        app.put(&quot;/users/{user_id}/reimbursements/{reimb_id}&quot;, editUnresolvedReimbursement);</span>
+<span class="nc" id="L213">        app.patch(&quot;/reimbursements/{reimb_id}&quot;, updateReimbursementStatus);</span>
+<span class="nc" id="L214">        app.delete(&quot;/users/{user_id}/reimbursements/{reimb_id}&quot;, deleteUnresolvedReimbursement);</span>
+<span class="nc" id="L215">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

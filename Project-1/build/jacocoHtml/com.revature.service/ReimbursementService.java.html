@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReimbursementService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Project-1</a> &gt; <a href="index.source.html" class="el_package">com.revature.service</a> &gt; <span class="el_source">ReimbursementService.java</span></div><h1>ReimbursementService.java</h1><pre class="source lang-java linenums">package com.revature.service;
+
+import com.revature.dao.ReimbursementDao;
+import com.revature.dto.AddReimbursementDTO;
+import com.revature.dto.ResponseReimbursementDTO;
+import com.revature.dto.UpdateReimbursementDTO;
+import com.revature.dto.UpdateReimbursementStatusDTO;
+import com.revature.exception.*;
+import com.revature.model.Reimbursement;
+import com.revature.utility.UploadImageUtility;
+import io.javalin.http.UploadedFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.naming.SizeLimitExceededException;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.TimeZone;
+
+public class ReimbursementService {
+<span class="pc" id="L27">    Logger logger = LoggerFactory.getLogger(ReimbursementService.class);</span>
+
+
+    private final ReimbursementDao reimbursementDao;
+    private final UploadImageUtility uploadImageUtility;
+
+<span class="nc" id="L33">    public ReimbursementService() {</span>
+<span class="nc" id="L34">        this.reimbursementDao = new ReimbursementDao();</span>
+<span class="nc" id="L35">        this.uploadImageUtility = new UploadImageUtility();</span>
+
+<span class="nc" id="L37">    }</span>
+<span class="fc" id="L38">    public ReimbursementService(ReimbursementDao mockDao, UploadImageUtility mockUploadImageUtility) {</span>
+<span class="fc" id="L39">        this.reimbursementDao = mockDao;</span>
+<span class="fc" id="L40">        this.uploadImageUtility = mockUploadImageUtility;</span>
+<span class="fc" id="L41">    }</span>
+
+
+    public ResponseReimbursementDTO addReimbursement(AddReimbursementDTO dto) throws SQLException, IOException, SizeLimitExceededException, InvalidFileTypeException, InvalidJsonBodyProvided {
+
+<span class="fc" id="L46">        AddReimbursementDTO sanitizedDto = sanitizeNewReimbursement(dto);</span>
+<span class="fc" id="L47">        Instant instant = Instant.now();</span>
+<span class="fc" id="L48">        ZoneId z = ZoneId.of(&quot;America/New_York&quot;);</span>
+<span class="fc" id="L49">        ZonedDateTime zdt = instant.atZone(z);</span>
+<span class="fc" id="L50">        Timestamp submitted = Timestamp.from(zdt.toInstant());</span>
+<span class="fc" id="L51">        sanitizedDto.setReimbSubmitted(submitted);</span>
+
+
+<span class="fc" id="L54">        UploadedFile uploadedImage = sanitizedDto.getReimbReceiptImage();</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        if (uploadedImage.getSize() &gt; 10000000) {</span>
+<span class="fc" id="L56">            throw new SizeLimitExceededException(&quot;File size exceeded limit of 10MB. Uploaded File Size: &quot; + uploadedImage.getSize());</span>
+        }
+<span class="pc bpc" id="L58" title="2 of 6 branches missed.">        if (!uploadedImage.getContentType().equals(&quot;image/png&quot;) &amp;&amp; !uploadedImage.getContentType().equals(&quot;image/jpg&quot;) &amp;&amp; !uploadedImage.getContentType().equals(&quot;image/jpeg&quot;)) {</span>
+<span class="fc" id="L59">            throw new InvalidFileTypeException(&quot;Invalid file type for uploaded image. Accepted files: .png .jpg .jpeg&quot;);</span>
+        }
+
+<span class="fc" id="L62">        String url = uploadImageUtility.uploadImage(uploadedImage);</span>
+
+
+
+<span class="fc" id="L66">        logger.info(&quot;User &quot; + dto.getReimbAuthor() + &quot; added a reimbursement.&quot;);</span>
+<span class="fc" id="L67">        return reimbursementDao.addReimbursement(sanitizedDto, url);</span>
+    }
+
+
+    public Reimbursement getReimbursementById(String reimbId) throws SQLException, ReimbursementDoesNotExist {
+        try {
+<span class="fc" id="L73">            int rId = Integer.parseInt(reimbId);</span>
+<span class="fc" id="L74">            Reimbursement reimbursement = reimbursementDao.getReimbursementById(rId);</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">            if (reimbursement == null) {</span>
+<span class="fc" id="L76">                throw new ReimbursementDoesNotExist(&quot;A reimbursement with an id of &quot; + rId + &quot; does not exist at this time.&quot;);</span>
+            }
+<span class="fc" id="L78">            logger.info(&quot;User requested reimbursement of id &quot; + reimbId + &quot;.&quot;);</span>
+<span class="fc" id="L79">            return reimbursement;</span>
+<span class="fc" id="L80">        } catch (IllegalArgumentException e) {</span>
+<span class="fc" id="L81">            throw new IllegalArgumentException(&quot;Invalid integer given for request.&quot;);</span>
+        }
+    }
+
+    public List&lt;ResponseReimbursementDTO&gt; getReimbursementsByUser(String userId) throws SQLException {
+        try {
+<span class="fc" id="L87">            int uId = Integer.parseInt(userId);</span>
+<span class="fc" id="L88">            logger.info(&quot;User requested all reimbursements for &quot; + userId + &quot;.&quot;);</span>
+<span class="fc" id="L89">            return reimbursementDao.getReimbursementsByUser(uId);</span>
+<span class="fc" id="L90">        } catch (IllegalArgumentException e) {</span>
+<span class="fc" id="L91">            throw new IllegalArgumentException(&quot;Invalid integer given for request.&quot;);</span>
+        }
+    }
+
+    public List&lt;ResponseReimbursementDTO&gt; getReimbursementsByUserAndStatus(String userId, String currentStatus) throws SQLException, InvalidQueryParamProvided {
+        try {
+<span class="fc" id="L97">            int uId = Integer.parseInt(userId);</span>
+<span class="fc" id="L98">            String status = validateStatus(currentStatus);</span>
+<span class="fc" id="L99">            logger.info(&quot;User requested all &quot; + status + &quot; reimbursements for user &quot; + userId + &quot;.&quot;);</span>
+<span class="fc" id="L100">            return reimbursementDao.getReimbursementsByUserAndStatus(uId, status);</span>
+<span class="fc" id="L101">        } catch (IllegalArgumentException e) {</span>
+<span class="fc" id="L102">            throw new IllegalArgumentException(&quot;Invalid integer given for the request.&quot;);</span>
+        }
+    }
+
+    public List&lt;ResponseReimbursementDTO&gt; getAllReimbursementsByStatus(String status) throws SQLException, InvalidQueryParamProvided {
+<span class="fc" id="L107">        String stat = validateStatus(status);</span>
+<span class="fc" id="L108">        logger.info(&quot;User requested all &quot; + stat +&quot; reimbursements.&quot;);</span>
+<span class="fc" id="L109">        return reimbursementDao.getAllReimbursementsByStatus(stat);</span>
+    }
+
+    public List&lt;ResponseReimbursementDTO&gt; getAllReimbursements() throws SQLException {
+<span class="fc" id="L113">        logger.info(&quot;User requested all reimbursements.&quot;);</span>
+<span class="fc" id="L114">        return reimbursementDao.getAllReimbursements();</span>
+    }
+
+    public Reimbursement editUnresolvedReimbursement(String reimbId, UpdateReimbursementDTO dto) throws SQLException, ReimbursementAlreadyResolved, ReimbursementDoesNotExist, InvalidJsonBodyProvided {
+
+<span class="fc bfc" id="L119" title="All 2 branches covered.">        if (!(getReimbursementById(reimbId).getStatus().equals(&quot;Pending&quot;))) {</span>
+<span class="fc" id="L120">            throw new ReimbursementAlreadyResolved(&quot;This reimbursement has already been approved or denied. Unable to make changes at this time.&quot;);</span>
+        }
+<span class="fc" id="L122">        int rId = Integer.parseInt(reimbId);</span>
+<span class="fc" id="L123">        UpdateReimbursementDTO sanitizedDto = sanitizeUpdateReimbursement(dto);</span>
+
+<span class="fc" id="L125">        logger.info(&quot;User edited reimbursement with an id of &quot; + reimbId + &quot;.&quot;);</span>
+<span class="fc" id="L126">        return reimbursementDao.editUnresolvedReimbursement(rId, sanitizedDto);</span>
+    }
+
+    public boolean updateReimbursementStatus(UpdateReimbursementStatusDTO dto, String reimbId) throws SQLException, ReimbursementAlreadyResolved, ReimbursementDoesNotExist, InvalidJsonBodyProvided {
+
+<span class="fc bfc" id="L131" title="All 2 branches covered.">        if(!(getReimbursementById(reimbId).getStatus().equals(&quot;Pending&quot;))) {</span>
+<span class="fc" id="L132">            throw new ReimbursementAlreadyResolved(&quot;This reimbursement has already been approved or denied. Unable to make changes at this time.&quot;);</span>
+        }
+<span class="pc bpc" id="L134" title="1 of 4 branches missed.">        if (!(dto.getStatusId() == 2 || dto.getStatusId() == 3)) {</span>
+<span class="fc" id="L135">            throw new InvalidJsonBodyProvided(&quot;You must provide an appropriate status code to update.&quot;);</span>
+        }
+<span class="fc" id="L137">        int rId = Integer.parseInt(reimbId);</span>
+<span class="fc" id="L138">        TimeZone.setDefault(TimeZone.getTimeZone(&quot;EST&quot;));</span>
+<span class="fc" id="L139">        Timestamp submitted = Timestamp.valueOf(LocalDateTime.now());</span>
+<span class="fc" id="L140">        dto.setTimestamp(submitted);</span>
+<span class="fc" id="L141">        logger.info(&quot;User updated the status of reimbursement with an id of &quot; + reimbId + &quot; to &quot; + dto.getStatusId() + &quot;.&quot;);</span>
+<span class="fc" id="L142">        return reimbursementDao.updateReimbursementStatus(dto, rId);</span>
+    }
+
+    public boolean deleteUnresolvedReimbursement(String reimbId) throws SQLException, ReimbursementAlreadyResolved, ReimbursementDoesNotExist {
+<span class="fc" id="L146">        Reimbursement reimbToDelete = getReimbursementById(reimbId);</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">        if(!(reimbToDelete.getStatus().equals(&quot;Pending&quot;))) {</span>
+<span class="fc" id="L148">            throw new ReimbursementAlreadyResolved(&quot;This reimbursement has already been approved or denied. Unable to make changes at this time.&quot;);</span>
+        }
+<span class="fc" id="L150">        int rId = Integer.parseInt(reimbId);</span>
+<span class="fc" id="L151">        String imageToDelete = reimbToDelete.getReceiptUrl().split(&quot;/&quot;)[4];</span>
+<span class="fc" id="L152">        uploadImageUtility.deleteImage(imageToDelete);</span>
+<span class="fc" id="L153">        logger.info(&quot;User deleted a reimbursement with an id of &quot; + rId + &quot;.&quot;);</span>
+<span class="fc" id="L154">        return reimbursementDao.deleteUnresolvedReimbursement(rId);</span>
+    }
+
+
+    public String validateStatus(String status) throws InvalidQueryParamProvided {
+<span class="fc" id="L159">        String stat = status.toLowerCase();</span>
+<span class="fc bfc" id="L160" title="All 6 branches covered.">        if (!(stat.equals(&quot;pending&quot;) || stat.equals(&quot;approved&quot;) || stat.equals(&quot;rejected&quot;)))  {</span>
+<span class="fc" id="L161">            throw new InvalidQueryParamProvided(&quot;Provided status is not a valid status. Input: &quot; + status);</span>
+        }
+<span class="fc" id="L163">        return stat.substring(0, 1).toUpperCase() + stat.substring(1);</span>
+    }
+
+    public AddReimbursementDTO sanitizeNewReimbursement(AddReimbursementDTO dto) throws InvalidJsonBodyProvided {
+<span class="fc" id="L167">        double amount = dto.getReimbAmount();</span>
+<span class="fc" id="L168">        String descrip = dto.getReimbDescription().trim();</span>
+<span class="fc" id="L169">        int type = dto.getReimbType();</span>
+<span class="pc bpc" id="L170" title="3 of 8 branches missed.">        if (!(type == 1 || type == 2 || type == 3 || type == 4)) {</span>
+<span class="fc" id="L171">            throw new InvalidJsonBodyProvided(&quot;Invalid type id provided. Input: &quot; + type);</span>
+        }
+<span class="pc bpc" id="L173" title="1 of 2 branches missed.">        if (amount &lt; 0) {</span>
+<span class="nc" id="L174">            throw new InvalidJsonBodyProvided(&quot;Amount provided cannot be negative. Input: &quot; + amount);</span>
+        }
+<span class="fc" id="L176">        dto.setReimbDescription(descrip);</span>
+<span class="fc" id="L177">        return dto;</span>
+    }
+
+    public UpdateReimbursementDTO sanitizeUpdateReimbursement(UpdateReimbursementDTO dto) throws InvalidJsonBodyProvided {
+<span class="fc" id="L181">        double amount = dto.getAmount();</span>
+
+<span class="fc" id="L183">        int type = dto.getType();</span>
+<span class="pc bpc" id="L184" title="3 of 8 branches missed.">        if (!(type == 1 || type == 2 || type == 3 || type == 4)) {</span>
+<span class="fc" id="L185">            throw new InvalidJsonBodyProvided(&quot;Invalid type id provided. Input: &quot; + type);</span>
+        }
+<span class="pc bpc" id="L187" title="1 of 2 branches missed.">        if (amount &lt; 0) {</span>
+<span class="nc" id="L188">            throw new InvalidJsonBodyProvided(&quot;Amount provided cannot be negative. Input: &quot; + amount);</span>
+        }
+<span class="fc" id="L190">        String descrip = dto.getDescription().trim();</span>
+<span class="fc" id="L191">        dto.setDescription(descrip);</span>
+<span class="fc" id="L192">        return dto;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

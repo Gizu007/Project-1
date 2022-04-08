@@ -1,0 +1,25 @@
+	x04 04 2022 - 10:00:06.176 [Test worker] INFO  c.r.service.ReimbursementService - User requested reimbursement of id 1.
+	
+x04 04 2022 - 10:00:06.192 [Test worker] INFO  c.r.service.ReimbursementService - User requested reimbursement of id 1.
+	p04 04 2022 - 10:00:06.211 [Test worker] INFO  c.r.service.ReimbursementService - User 1 added a reimbursement.
+	x04 04 2022 - 10:00:06.214 [Test worker] INFO  c.r.service.ReimbursementService - User requested reimbursement of id 1.
+	x04 04 2022 - 10:00:06.217 [Test worker] INFO  c.r.service.ReimbursementService - User requested reimbursement of id 1.
+	x04 04 2022 - 10:00:06.225 [Test worker] INFO  c.r.service.ReimbursementService - User requested reimbursement of id 1.
+	x04 04 2022 - 10:00:06.233 [Test worker] INFO  c.r.service.ReimbursementService - User requested reimbursement of id 1.
+	u04 04 2022 - 10:00:06.239 [Test worker] INFO  c.r.service.ReimbursementService - User requested all reimbursements.
+	ˆ04 04 2022 - 10:00:06.243 [Test worker] INFO  c.r.service.ReimbursementService - User requested all Pending reimbursements for user 1.
+	{04 04 2022 - 10:00:06.251 [Test worker] INFO  c.r.service.ReimbursementService - User requested all reimbursements for 1.
+	‰04 04 2022 - 10:00:06.254 [Test worker] INFO  c.r.service.ReimbursementService - User requested all Approved reimbursements for user 1.
+	~04 04 2022 - 10:00:06.257 [Test worker] INFO  c.r.service.ReimbursementService - User requested all Rejected reimbursements.
+	x04 04 2022 - 10:00:06.262 [Test worker] INFO  c.r.service.ReimbursementService - User requested reimbursement of id 1.
+	€04 04 2022 - 10:00:06.262 [Test worker] INFO  c.r.service.ReimbursementService - User deleted a reimbursement with an id of 1.
+	"p04 04 2022 - 10:00:06.270 [Test worker] INFO  c.r.service.ReimbursementService - User 1 added a reimbursement.
+	#x04 04 2022 - 10:00:06.272 [Test worker] INFO  c.r.service.ReimbursementService - User requested reimbursement of id 1.
+	#‘04 04 2022 - 10:00:06.272 [Test worker] INFO  c.r.service.ReimbursementService - User updated the status of reimbursement with an id of 1 to 3.
+	%x04 04 2022 - 10:00:06.279 [Test worker] INFO  c.r.service.ReimbursementService - User requested reimbursement of id 1.
+	&x04 04 2022 - 10:00:06.283 [Test worker] INFO  c.r.service.ReimbursementService - User requested reimbursement of id 1.
+	&}04 04 2022 - 10:00:06.284 [Test worker] INFO  c.r.service.ReimbursementService - User edited reimbursement with an id of 1.
+(*c04 04 2022 - 10:00:06.361 [Test worker] INFO  com.revature.service.UserService - Successful login.
+(*Username: admin
+(+g04 04 2022 - 10:00:06.364 [Test worker] WARN  com.revature.service.UserService - Failed login attempt.
+(+Username: admin

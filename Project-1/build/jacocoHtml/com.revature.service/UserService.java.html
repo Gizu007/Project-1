@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Project-1</a> &gt; <a href="index.source.html" class="el_package">com.revature.service</a> &gt; <span class="el_source">UserService.java</span></div><h1>UserService.java</h1><pre class="source lang-java linenums">package com.revature.service;
+
+import com.revature.dao.UserDao;
+import com.revature.dto.LoginDTO;
+import com.revature.dto.UserDTO;
+import com.revature.exception.InvalidQueryParamProvided;
+import com.revature.exception.UserDoesNotExist;
+import com.revature.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.security.auth.login.FailedLoginException;
+import java.sql.SQLException;
+import java.util.List;
+
+public class UserService {
+<span class="pc" id="L17">    Logger logger = LoggerFactory.getLogger(UserService.class);</span>
+    private UserDao userDao;
+
+<span class="nc" id="L20">    public UserService() {</span>
+<span class="nc" id="L21">        this.userDao = new UserDao();</span>
+<span class="nc" id="L22">    }</span>
+
+<span class="fc" id="L24">    public UserService(UserDao mockDao) {</span>
+<span class="fc" id="L25">        this.userDao = mockDao;</span>
+<span class="fc" id="L26">    }</span>
+
+    public User login(LoginDTO dto) throws SQLException, FailedLoginException {
+<span class="fc" id="L29">        User user = userDao.getUserByUsernameAndPassword(dto);</span>
+
+<span class="fc bfc" id="L31" title="All 2 branches covered.">        if (user == null) {</span>
+<span class="fc" id="L32">            logger.warn(&quot;Failed login attempt.\nUsername: &quot; + dto.getUsername());</span>
+<span class="fc" id="L33">            throw new FailedLoginException(&quot;Invalid username and\\or password was provided.&quot;);</span>
+        }
+<span class="fc" id="L35">        logger.info(&quot;Successful login.\nUsername: &quot; + dto.getUsername());</span>
+<span class="fc" id="L36">        return user;</span>
+    }
+
+    public UserDTO getUserInfo(String user_id) throws SQLException, UserDoesNotExist {
+        try {
+<span class="fc" id="L41">            int uId = Integer.parseInt(user_id);</span>
+<span class="fc" id="L42">            UserDTO user = userDao.getUserByUserId(uId);</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">            if (user == null) {</span>
+<span class="fc" id="L44">                throw new UserDoesNotExist(&quot;A user with an id of &quot; + uId + &quot; does not exist.&quot;);</span>
+            }
+<span class="fc" id="L46">            return user;</span>
+<span class="fc" id="L47">        } catch (IllegalArgumentException e) {</span>
+<span class="fc" id="L48">            throw new IllegalArgumentException(&quot;Inavlid integer provided for user id.&quot;);</span>
+        }
+    }
+
+    public List&lt;UserDTO&gt; getAllUsers() throws SQLException {
+<span class="fc" id="L53">        return userDao.getAllUsers();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

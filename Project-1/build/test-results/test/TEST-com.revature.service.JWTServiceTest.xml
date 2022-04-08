@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.revature.service.JWTServiceTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2022-04-04T14:00:02" hostname="DESKTOP-H8JS8EI" time="1.712">
+  <properties/>
+  <testcase name="testCreateValidJwt()" classname="com.revature.service.JWTServiceTest" time="1.384"/>
+  <testcase name="testCreatesDifferentJwtsForDifferentUsers()" classname="com.revature.service.JWTServiceTest" time="0.013"/>
+  <testcase name="testParseValidJWT()" classname="com.revature.service.JWTServiceTest" time="0.247"/>
+  <testcase name="testParseInvalidJWT()" classname="com.revature.service.JWTServiceTest" time="0.065"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
