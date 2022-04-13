@@ -35,8 +35,7 @@ List of features:
 ## Getting Started
 - Initial Setup:
 ```
-git clone https://github.com/java-gcp-220228/CaitlinTalerico/new/main/project-1-reimbursement-system
-gradle build
+git clone https://github.com/Gizu007/Project-2
 ```
 - Required Environmental Variables:
   - Database:
