@@ -32,6 +32,10 @@ List of features:
   * View All Reimbursements.
   * Approve/Deny any Pending Reimbursement.
 
+To-do list:
+* Create new users functionality
+* Allow for employees to change password
+
 ## Getting Started
 - Initial Setup:
 ```
